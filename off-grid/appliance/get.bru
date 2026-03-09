@@ -1,0 +1,15 @@
+meta {
+  name: get
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/appliance
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

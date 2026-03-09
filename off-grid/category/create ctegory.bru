@@ -1,0 +1,23 @@
+meta {
+  name: create ctegory
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/category
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "test",
+    "slug":"test_slug"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

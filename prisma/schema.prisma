@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  projects      Project[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Category {
+  id        String      @id @default(uuid())
+  name      String
+  slug      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  appliance Appliance[]
+}
+
+model Appliance {
+  id                String             @id @default(uuid())
+  slug              String             @unique
+  name              String
+  category          Category           @relation(fields: [categoryId], references: [id])
+  typicalPowerW     Int
+  minPowerW         Int?
+  maxPowerW         Int?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  categoryId        String
+  projectAppliances ProjectAppliance[]
+}
+
+model Project {
+  id                String             @id @default(uuid())
+  name              String
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  projectAppliances ProjectAppliance[]
+}
+
+model ProjectAppliance {
+  id          String @id @default(uuid())
+  quantity    Int
+  hoursPerDay Float
+
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id])
+  applianceId String
+  appliance   Appliance @relation(fields: [applianceId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
