@@ -1,12 +1,17 @@
 import { Router } from "express";
-import { routerAppliances } from "./appliances/appliances.get.js";
-import { routerCreateAppliance } from "./appliances/appliance.post.js";
-import { createCategoryRouter } from "./category/category.post.js";
-import { routerGetCategory } from "./category/category.get.js";
+import appliancesGet from "./appliances/appliances.get.js";
+import appliancesPost from "./appliances/appliance.post.js";
+import categoryPost from "./category/category.post.js";
+import categoryGet from "./category/category.get.js";
+import projectGet from "./project/get.project.js";
+import projectPost from "./project/create.project.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 export const router = Router();
 
-router.use("/appliance", routerAppliances);
-router.use("/appliance", routerCreateAppliance);
-router.use("/category", createCategoryRouter);
-router.use("/category", routerGetCategory);
+router.use("/appliance", appliancesGet);
+router.use("/appliance", appliancesPost);
+router.use("/category", categoryPost);
+router.use("/category", categoryGet);
+router.use("/project", authMiddleware, projectGet);
+router.use("/project", authMiddleware, projectPost);

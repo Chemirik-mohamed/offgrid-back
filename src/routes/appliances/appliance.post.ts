@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { createAppliance } from "../../controllers/appliance.controllers.js";
-export const routerCreateAppliance = Router();
+const router = Router();
 
-routerCreateAppliance.post("/", createAppliance);
+router.post("/", createAppliance);
+
+export default router;

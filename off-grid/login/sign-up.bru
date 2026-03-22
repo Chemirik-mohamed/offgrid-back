@@ -1,0 +1,28 @@
+meta {
+  name: sign-up
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/auth/sign-up/email
+  body: json
+  auth: inherit
+}
+
+headers {
+  Origin: http://localhost:3000
+}
+
+body:json {
+  {
+    "name":"amine",
+    "email":"amine@test.com",
+    "password":"test1234"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -21,7 +21,7 @@ export async function create(req: Request, res: Response) {
 	const parsde = createCategory.safeParse(req.body);
 
 	if (!parsde.success) {
-		return res.status(401).json({ error: "invalid parsde" });
+		return res.status(400).json({ error: "invalid parsde" });
 	}
 
 	const data = parsde.data;

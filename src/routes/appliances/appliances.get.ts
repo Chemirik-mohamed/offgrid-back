@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { getAppliance } from "../../controllers/appliance.controllers.js";
 
-export const routerAppliances = Router();
+const router = Router();
 
-routerAppliances.get("/", getAppliance);
+router.get("/", getAppliance);
+
+export default router;

@@ -1,9 +1,11 @@
-declare namespace Express {
-	interface Request {
-		user?: {
-			id: string;
-			email: string;
-			name: string;
-		};
+import type { auth } from "../lib/auth.ts";
+
+type Session = typeof auth.$Infer.Session;
+
+declare global {
+	namespace Express {
+		interface Request {
+			user: Session["user"];
+		}
 	}
 }

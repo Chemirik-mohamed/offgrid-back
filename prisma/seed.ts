@@ -30,6 +30,7 @@ async function main() {
 				slug: "misc",
 			},
 		],
+		skipDuplicates: true,
 	});
 	const itCategory = await prisma.category.findFirstOrThrow({
 		where: { name: "IT" },
@@ -58,6 +59,34 @@ async function main() {
 			},
 		],
 		skipDuplicates: true,
+	});
+	await prisma.user.createMany({
+		data: {
+			name: "ayoub",
+			email: "test@test.com",
+		},
+		skipDuplicates: true,
+	});
+
+	const userEmail = await prisma.user.findFirstOrThrow({
+		where: { email: "amine@test.com" },
+	});
+
+	await prisma.project.createMany({
+		data: [
+			{
+				name: "Projet Alpha",
+				userId: userEmail.id,
+			},
+			{
+				name: "Projet Beta",
+				userId: userEmail.id,
+			},
+			{
+				name: "Projet Gamma",
+				userId: userEmail.id,
+			},
+		],
 	});
 
 	console.log("Seed terminé sans erreur ✅");

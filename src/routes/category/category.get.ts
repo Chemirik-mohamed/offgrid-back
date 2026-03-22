@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { getcategory } from "../../controllers/category.controllers.js";
 
-export const routerGetCategory = Router();
+const router = Router();
 
-routerGetCategory.get("/", getcategory);
+router.get("/", getcategory);
+
+export default router;
