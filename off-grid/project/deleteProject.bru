@@ -1,0 +1,16 @@
+meta {
+  name: deleteProject
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:3000/api/project/cbdde48a-2e87-4bfc-aee5-5ab7b352a0c3
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

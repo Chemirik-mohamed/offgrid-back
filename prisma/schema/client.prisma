@@ -1,0 +1,30 @@
+model Client {
+  id       String    @id @default(uuid())
+  name     String?
+  email    String?
+  phone    String?
+  address  String?
+  city     String?
+  zipCode  String?
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("client")
+}
+
+model ClientIntake {
+  id        String  @id @default(uuid())
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  accessToken String    @unique @default(uuid())
+  submittedAt DateTime?
+  expiresAt   DateTime?
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@map("client_intake")
+}

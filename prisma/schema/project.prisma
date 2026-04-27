@@ -1,0 +1,87 @@
+enum ProjectStatus {
+  DRAFT
+  CLIENT_PENDING
+  CLIENT_FILLED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum AccessType {
+  ROAD
+  CARRIAGE
+  FOOT
+}
+
+enum lightningRisk {
+  LOW
+  MODERATE
+  HIGH
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  name        String         
+  description String?
+  status      ProjectStatus @default(DRAFT)
+  userId      String
+  clientId    String?
+
+  user   User    @relation(fields: [userId], references: [id])
+  client Client? @relation(fields: [clientId], references: [id])
+
+  // Intake client
+  intake ClientIntake?
+
+  // Lifecycle
+  isPinned  Boolean   @default(false)
+  expiresAt DateTime?
+
+  // Calcul
+  lastCalculationSnapshot Json?
+
+  // Relations
+  projectAppliances ProjectAppliance[]
+  site              ProjectSite?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+   @@unique([userId , name])
+
+  @@map("project")
+}
+
+model ProjectSite {
+  id        String  @id @default(uuid())
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Identité du site
+  address                String?
+  city                   String?
+  zipCode                String?
+  latitude               Float?
+  longitude              Float?
+  altitudeM              Float?
+  accessType             AccessType    @default(ROAD)
+  requiresFourWheelDrive Boolean       @default(false)
+  lightningRisk          lightningRisk @default(LOW)
+  usagePeriods           String?
+
+  // Système
+  dcBusVoltageV           Int     @default(48)
+  autonomyDays            Float?
+  panelToBatteryDistanceM Float?
+  pvMountingType          String?
+  optimizePvInclination   Boolean @default(false)
+
+  // Sources d'énergie
+  hasGenerator   Boolean @default(false)
+  hasWindTurbine Boolean @default(false)
+  hasHydro       Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("project_site")
+}

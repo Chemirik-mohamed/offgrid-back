@@ -11,12 +11,42 @@ post {
 }
 
 auth:bearer {
-  token: JV8lrv5emca8sVzmFyPvkZkZZut2f72D
+  token: SnxmCPMMjctkk359zxIO9dZKfmz7AMSh
 }
 
 body:json {
   {
-    "name": "test"
+    "name": "Gîte du Col d'Izoard",
+    "description": "Appliances saisis, calculs PVGIS en cours, choix batteries à valider",
+    "status": "IN_PROGRESS",
+    "client": {
+      "name": "Nicolas DURAND Énergie",
+      "email": "n.durand@durand-energie.fr",
+      "phone": "+33 6 88 22 45 19",
+      "address": "7 avenue de la Durance",
+      "city": "Briançon",
+      "zipCode": "05100"
+    },
+    "site": {
+      "address": "Route du Col d'Izoard",
+      "city": "Cervières",
+      "zipCode": "05100",
+      "latitude": 44.8583,
+      "longitude": 6.7350,
+      "altitudeM": 2360,
+      "accessType": "ROAD",
+      "requiresFourWheelDrive": true,
+      "lightningRisk": "HIGH",
+      "usagePeriods": "Toute l'année, occupation permanente",
+      "dcBusVoltageV": 48,
+      "autonomyDays": 4,
+      "panelToBatteryDistanceM": 15,
+      "pvMountingType": "GROUND_MOUNT",
+      "optimizePvInclination": true,
+      "hasGenerator": true,
+      "hasWindTurbine": true,
+      "hasHydro": false
+    }
   }
 }
 

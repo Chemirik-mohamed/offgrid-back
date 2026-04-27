@@ -1,0 +1,26 @@
+meta {
+  name: update
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3000/api/project/ba78807e-4ba7-43b4-bdbc-13b82e1289dc
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: zmok4PPFizeOmGrJj7PbnKJxZcJ1FvWs
+}
+
+body:json {
+  {
+      "status": "CLIENT_PENDING"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

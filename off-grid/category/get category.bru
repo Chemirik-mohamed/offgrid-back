@@ -7,9 +7,14 @@ meta {
 get {
   url: http://localhost:3000/api/category
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: 95wIsn3bNCVcg1cRO0qnX9Igp5NCBdsh
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -1,34 +1,29 @@
 import type { Request, Response } from "express";
-import { querySchema } from "../schemas/QuerySchema.js";
 import { prisma } from "../lib/prisma.js";
-import { createCategory } from "../schemas/category/category.schema.js";
+import { createCategorySchemas } from "../schemas/category/category.schema.js";
 
-export async function getcategory(req: Request, res: Response) {
-	const parsde = querySchema.safeParse(req.query);
-
-	if (!parsde.success) {
-		return res.status(400).json({ error: "invalid query " });
-	}
-
-	const category = await prisma.category.findMany();
+export async function getCategories(_req: Request, res: Response) {
+	const categories = await prisma.category.findMany({
+		orderBy: { displayOrder: "asc" },
+	});
 
 	return res.json({
-		data: category,
+		data: categories,
 	});
 }
 
-export async function create(req: Request, res: Response) {
-	const parsde = createCategory.safeParse(req.body);
+export async function createCategory(req: Request, res: Response) {
+	const parsed = createCategorySchemas.safeParse(req.body);
 
-	if (!parsde.success) {
+	if (!parsed.success) {
 		return res.status(400).json({ error: "invalid parsde" });
 	}
 
-	const data = parsde.data;
+	const data = parsed.data;
 
 	const category = await prisma.category.create({
 		data: {
-			name: data.name,
+			label: data.label,
 			slug: data.slug,
 		},
 	});

@@ -1,0 +1,54 @@
+model Appliance {
+  id                String             @id @default(uuid())
+  slug              String             @unique
+  name              String
+  typicalPowerW     Int
+  minPowerW         Int?
+  maxPowerW         Int?
+  categoryId        String
+  category          Category           @relation(fields: [categoryId], references: [id])
+  projectAppliances ProjectAppliance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("appliance")
+}
+
+model ProjectAppliance {
+  id          String @id @default(uuid())
+  projectId   String
+  applianceId String
+
+  // Section A1 — données de consommation
+  quantity          Int
+  currentType       String @default("AC") // "AC" | "DC"
+  voltageV          Float  @default(230)
+  dailyUsageMinutes Float
+  ratedPowerW       Float
+  startupPowerW     Float?
+  diversityCoeff    Float  @default(1.0)
+
+  // Section A2 — planning horaire
+  dailyScheduleMinutes Int[]
+
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  appliance Appliance @relation(fields: [applianceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("project_appliance")
+}
+
+model Category {
+  id           String      @id @default(uuid())
+  slug         String      @unique
+  label        String
+  displayOrder Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  appliances   Appliance[]
+
+  @@map("category")
+}

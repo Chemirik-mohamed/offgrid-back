@@ -2,24 +2,35 @@ import type { Request, Response } from "express";
 import { querySchema } from "../schemas/QuerySchema.js";
 import { prisma } from "../lib/prisma.js";
 import { createApplianceSchema } from "../schemas/appliances/createApplianceSchema.js";
+import { z } from "zod";
 
 export async function getAppliance(req: Request, res: Response) {
 	const parsde = querySchema.safeParse(req.query);
 
 	if (!parsde.success) {
-		return res.status(400).json({ error: "invalid query " });
+		return res.status(400).json({ error: z.treeifyError(parsde.error) });
 	}
 
-	const appliance = await prisma.appliance.findMany({
+	const { category, q } = parsde.data;
+
+	const appliances = await prisma.appliance.findMany({
+		where: {
+			...(category !== undefined && {
+				category: { slug: category },
+			}),
+			...(q !== undefined && {
+				name: { contains: q, mode: "insensitive" },
+			}),
+		},
 		include: {
 			category: {
-				select: { name: true },
+				select: { slug: true, label: true },
 			},
 		},
 	});
 
 	return res.json({
-		data: appliance,
+		data: appliances,
 	});
 }
 
@@ -35,7 +46,7 @@ export async function createAppliance(req: Request, res: Response) {
 	});
 
 	if (!category) {
-		return res.status(409).json({ error: "invalid category" });
+		return res.status(409).json({ error: "Category not found" });
 	}
 
 	const data = parsde.data;

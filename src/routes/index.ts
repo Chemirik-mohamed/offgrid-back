@@ -8,5 +8,5 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 export const router = Router();
 
 router.use("/appliance", appliancesRouter);
-router.use("/category", categoryRouter);
+router.use("/categories", categoryRouter);
 router.use("/project", authMiddleware, projectRoutes);
