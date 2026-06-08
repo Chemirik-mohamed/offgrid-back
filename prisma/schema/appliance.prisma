@@ -1,12 +1,22 @@
+enum CurrentType {
+  AC
+  DC
+}
+
 model Appliance {
-  id                String             @id @default(uuid())
-  slug              String             @unique
-  name              String
-  typicalPowerW     Int
-  minPowerW         Int?
-  maxPowerW         Int?
-  categoryId        String
-  category          Category           @relation(fields: [categoryId], references: [id])
+  id         String   @id @default(uuid())
+  slug       String   @unique
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  // Caractéristiques techniques (catalogue, gérées par seed)
+  currentType            CurrentType @default(AC)
+  voltageV               Float       @default(230)
+  unitPowerW             Float
+  startupPowerW          Float
+  defaultDiversityFactor Float       @default(1.0)
+
   projectAppliances ProjectAppliance[]
 
   createdAt DateTime @default(now())
@@ -20,17 +30,19 @@ model ProjectAppliance {
   projectId   String
   applianceId String
 
-  // Section A1 — données de consommation
-  quantity          Int
-  currentType       String @default("AC") // "AC" | "DC"
-  voltageV          Float  @default(230)
-  dailyUsageMinutes Float
-  ratedPowerW       Float
-  startupPowerW     Float?
-  diversityCoeff    Float  @default(1.0)
+  // Saisie utilisateur (modale)
+  quantity    Int
+  timeSlots   Json // TimeSlot[] validé par Zod
+  currentType CurrentType // surchargeable depuis le catalogue
 
-  // Section A2 — planning horaire
-  dailyScheduleMinutes Int[]
+  // Snapshot catalogue à la création (figé pour les calculs)
+  voltageVSnapshot               Float
+  unitPowerWSnapshot             Float
+  startupPowerWSnapshot          Float
+  defaultDiversityFactorSnapshot Float
+
+  // Ajustement expert Surtec (avant calcul)
+  diversityFactorOverride Float?
 
   project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   appliance Appliance @relation(fields: [applianceId], references: [id])

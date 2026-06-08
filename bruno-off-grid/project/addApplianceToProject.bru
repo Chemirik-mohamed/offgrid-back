@@ -1,0 +1,32 @@
+meta {
+  name: addApplianceToProject
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/api/project/29cc1c5c-ac86-4087-8715-f07d3db8f8f1/appliance
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "applianceId": "3930b2ef-1c59-4395-a36b-8d10b0a459ab",
+    "quantity": 2,
+    "currentType" : "AC",
+    "timeSlots" :[
+      {
+        "label" :"evening",
+      "from" :"18:00",
+      "to" :"19:00"
+      }
+    ]
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

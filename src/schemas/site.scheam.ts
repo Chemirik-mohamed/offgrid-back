@@ -52,3 +52,24 @@ export const createSiteSchema = z.object({
 });
 
 export type CreateSiteInput = z.infer<typeof createSiteSchema>;
+
+export const updateSiteSchema = z.object({
+	address: z.string().nullable().optional(),
+	city: z.string().nullable().optional(),
+	zipCode: z.string().nullable().optional(),
+	latitude: z.number().nullable().optional(),
+	longitude: z.number().nullable().optional(),
+	altitudeM: z.number().nullable().optional(),
+	accessType: z.enum(["ROAD", "CARRIAGE", "FOOT"]).optional(),
+	requiresFourWheelDrive: z.boolean().optional(),
+	lightningRisk: z.enum(["LOW", "MODERATE", "HIGH"]).optional(),
+	usagePeriods: z.string().nullable().optional(),
+	dcBusVoltageV: z.int().optional(),
+	autonomyDays: z.number().nullable().optional(),
+	panelToBatteryDistanceM: z.number().nullable().optional(),
+	pvMountingType: z.string().nullable().optional(),
+	optimizePvInclination: z.boolean().optional(),
+	hasGenerator: z.boolean().optional(),
+	hasWindTurbine: z.boolean().optional(),
+	hasHydro: z.boolean().optional(),
+});

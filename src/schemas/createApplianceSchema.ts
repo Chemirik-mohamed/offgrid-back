@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createCategorySchemas } from "../category/category.schema.js";
+import { createCategorySchemas } from "./category.schema.js";
 
 export const createApplianceSchema = z.object({
 	slug: z
@@ -11,19 +11,18 @@ export const createApplianceSchema = z.object({
 		}),
 	name: z.string().min(1, "Le nom est obligatoire"),
 	categorySlug: createCategorySchemas.shape.slug,
-	typicalPowerW: z
+	unitPowerW: z
 		.number()
-		.positive("La puissance typique doit être supérieure à 0"),
-	minPowerW: z
+		.positive("La puissance unitaire doit être supérieure à 0"),
+	startupPowerW: z
 		.number()
-		.positive("La puissance minimale doit être supérieure à 0")
-		.optional()
-		.transform((v) => v ?? null),
-	maxPowerW: z
+		.positive("La puissance de démarrage doit être supérieure à 0"),
+	defaultDiversityFactor: z.number().min(0).max(1).default(1.0),
+	voltageV: z
 		.number()
-		.positive("La puissance maximale doit être supérieure à 0")
-		.optional()
-		.transform((v) => v ?? null),
+		.positive("La tension doit être supérieure à 0")
+		.default(230),
+	currentType: z.enum(["AC", "DC"]).default("AC"),
 });
 
 export type CreateApplianceInput = z.infer<typeof createApplianceSchema>;

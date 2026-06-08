@@ -37,53 +37,60 @@ async function main() {
 		}
 		return id;
 	}
-
 	// ─── 2. Appliances catalog ──────────────────────────────────────────
 	console.log("  → Seeding appliances...");
 	await prisma.appliance.createMany({
 		skipDuplicates: true,
 		data: [
-			// Lighting
+			// Lighting (coef 0.30 — typical for lighting per Surtec)
 			{
 				slug: "led-7-5w",
 				name: "LED 7,5W",
-				typicalPowerW: 7.5,
+				unitPowerW: 7.5,
+				startupPowerW: 7.5,
+				defaultDiversityFactor: 0.3,
 				categoryId: getCategoryId("lighting"),
 			},
 			{
 				slug: "led-9w",
 				name: "LED 9W",
-				typicalPowerW: 9,
+				unitPowerW: 9,
+				startupPowerW: 9,
+				defaultDiversityFactor: 0.3,
 				categoryId: getCategoryId("lighting"),
 			},
 			{
 				slug: "halogen-50w",
 				name: "Halogène 50W",
-				typicalPowerW: 50,
+				unitPowerW: 50,
+				startupPowerW: 50,
+				defaultDiversityFactor: 0.3,
 				categoryId: getCategoryId("lighting"),
 			},
 			{
 				slug: "neon-tube-18w",
 				name: "Tube néon 18W",
-				typicalPowerW: 18,
+				unitPowerW: 18,
+				startupPowerW: 18,
+				defaultDiversityFactor: 0.3,
 				categoryId: getCategoryId("lighting"),
 			},
 
-			// Refrigeration
+			// Refrigeration (coef 0.50 — appliances cycle on/off)
 			{
 				slug: "refrigerator",
 				name: "Réfrigérateur",
-				typicalPowerW: 40,
-				minPowerW: 20,
-				maxPowerW: 150,
+				unitPowerW: 40,
+				startupPowerW: 600,
+				defaultDiversityFactor: 0.5,
 				categoryId: getCategoryId("refrigeration"),
 			},
 			{
 				slug: "freezer",
 				name: "Congélateur",
-				typicalPowerW: 60,
-				minPowerW: 30,
-				maxPowerW: 200,
+				unitPowerW: 60,
+				startupPowerW: 600,
+				defaultDiversityFactor: 0.5,
 				categoryId: getCategoryId("refrigeration"),
 			},
 
@@ -91,27 +98,33 @@ async function main() {
 			{
 				slug: "food-processor",
 				name: "Robot",
-				typicalPowerW: 500,
-				maxPowerW: 1500,
+				unitPowerW: 500,
+				startupPowerW: 1000,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("kitchen"),
 			},
 			{
 				slug: "espresso-machine",
 				name: "Cafetière",
-				typicalPowerW: 1000,
+				unitPowerW: 1000,
+				startupPowerW: 1000,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("kitchen"),
 			},
 			{
 				slug: "induction-hob",
 				name: "Plaques induction",
-				typicalPowerW: 2500,
+				unitPowerW: 2500,
+				startupPowerW: 2500,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("kitchen"),
 			},
 			{
 				slug: "dishwasher",
 				name: "Lave-vaisselle",
-				typicalPowerW: 1000,
-				maxPowerW: 2000,
+				unitPowerW: 1000,
+				startupPowerW: 1500,
+				defaultDiversityFactor: 0.5,
 				categoryId: getCategoryId("kitchen"),
 			},
 
@@ -119,13 +132,17 @@ async function main() {
 			{
 				slug: "washing-machine",
 				name: "Lave-linge",
-				typicalPowerW: 1500,
+				unitPowerW: 1500,
+				startupPowerW: 1500,
+				defaultDiversityFactor: 0.5,
 				categoryId: getCategoryId("appliances"),
 			},
 			{
 				slug: "vacuum-cleaner",
 				name: "Aspirateur",
-				typicalPowerW: 1500,
+				unitPowerW: 1500,
+				startupPowerW: 1500,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("appliances"),
 			},
 
@@ -133,25 +150,33 @@ async function main() {
 			{
 				slug: "internet-box",
 				name: "Box internet",
-				typicalPowerW: 20,
+				unitPowerW: 20,
+				startupPowerW: 20,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("computing"),
 			},
 			{
 				slug: "tablet",
 				name: "Tablette",
-				typicalPowerW: 15,
+				unitPowerW: 15,
+				startupPowerW: 15,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("computing"),
 			},
 			{
 				slug: "printer",
 				name: "Imprimante",
-				typicalPowerW: 100,
+				unitPowerW: 100,
+				startupPowerW: 100,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("computing"),
 			},
 			{
 				slug: "phone-charger",
 				name: "Chargeur téléphone",
-				typicalPowerW: 10,
+				unitPowerW: 10,
+				startupPowerW: 10,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("computing"),
 			},
 
@@ -159,24 +184,29 @@ async function main() {
 			{
 				slug: "stereo",
 				name: "Chaîne stéréo",
-				typicalPowerW: 200,
+				unitPowerW: 200,
+				startupPowerW: 200,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("general"),
 			},
 			{
 				slug: "bike-charger",
 				name: "Recharge vélo",
-				typicalPowerW: 300,
+				unitPowerW: 300,
+				startupPowerW: 300,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("general"),
 			},
 			{
 				slug: "power-tools",
 				name: "Outillage élec.",
-				typicalPowerW: 100,
+				unitPowerW: 100,
+				startupPowerW: 100,
+				defaultDiversityFactor: 1.0,
 				categoryId: getCategoryId("general"),
 			},
 		],
 	});
-
 	// ─── 3. Clients ─────────────────────────────────────────────────────
 	console.log("  → Seeding clients...");
 	await prisma.client.createMany({

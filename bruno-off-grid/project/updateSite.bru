@@ -1,0 +1,28 @@
+meta {
+  name: updateSite
+  type: http
+  seq: 7
+}
+
+patch {
+  url: http://localhost:3000/api/project/site/{{siteId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "city": "Lyon",
+    "address": "12 rue des Pins",
+    "zipCode": "69001",
+    "dcBusVoltageV": 48,
+    "accessType": "ROAD",
+    "lightningRisk": "LOW",
+    "hasGenerator": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

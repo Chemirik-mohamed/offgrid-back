@@ -9,6 +9,9 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
+		sendResetPassword: async ({ user, url }) => {
+			console.log("Reset link:", url, user);
+		},
 	},
 	trustedOrigins: ["http://localhost:5174"], // adapte selon ton front
 });

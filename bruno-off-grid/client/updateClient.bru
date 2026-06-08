@@ -1,0 +1,24 @@
+meta {
+  name: updateClient
+  type: http
+  seq: 1
+}
+
+patch {
+  url: http://localhost:3000/api/client/{{clientId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Dupont SAS",
+    "email": "contact@dupont.fr",
+    "phone": "0600000000"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

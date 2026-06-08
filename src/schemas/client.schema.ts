@@ -25,3 +25,12 @@ export const createClientSchema = z.object({
 });
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
+
+export const updateClientSchema = z.object({
+	name: z.string().min(2, { message: "Minimum 2 caractères" }).optional(),
+	email: z.email().nullable().optional(),
+	phone: z.string().nullable().optional(),
+	address: z.string().nullable().optional(),
+	city: z.string().nullable().optional(),
+	zipCode: z.string().nullable().optional(),
+});

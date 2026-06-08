@@ -1,0 +1,16 @@
+meta {
+  name: removeApplianceFromProject
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:3000/api/project/e065fe2b-a407-4be1-b4d8-19540b079dbf/appliance/3927a7ca-2056-4f15-8020-54712c71cc4f
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

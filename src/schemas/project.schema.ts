@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createClientSchema } from "../client/client.schema.js";
-import { createSiteSchema } from "../site/site.scheam.js";
+import { createClientSchema } from "./client.schema.js";
+import { createSiteSchema } from "./site.scheam.js";
 
 export const projectParamsSchema = z.object({
 	id: z.uuid({ error: "L'idantifaint du projet et invalide" }),

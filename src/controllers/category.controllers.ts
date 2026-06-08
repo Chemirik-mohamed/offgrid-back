@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
-import { createCategorySchemas } from "../schemas/category/category.schema.js";
+import { createCategorySchemas } from "../schemas/category.schema.js";
 
 export async function getCategories(_req: Request, res: Response) {
 	const categories = await prisma.category.findMany({
