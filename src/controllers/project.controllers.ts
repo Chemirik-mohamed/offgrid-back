@@ -164,9 +164,6 @@ export async function updateProject(
 			...(parsedBody.data.status !== undefined && {
 				status: parsedBody.data.status,
 			}),
-			...(parsedBody.data.clientId !== undefined && {
-				clientId: parsedBody.data.clientId,
-			}),
 		};
 		if (Object.keys(dataToUpdate).length === 0) {
 			return res.status(400).json({ message: "Aucune donnée à mettre à jour" });

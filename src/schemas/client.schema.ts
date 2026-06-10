@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const clientParamsSchema = z.object({
+	id: z.uuid({ error: "L'identifiant client est invalide" }),
+});
+
 export const createClientSchema = z.object({
 	name: z.string().min(2, { message: "Minimum 2 caractères" }),
 	email: z

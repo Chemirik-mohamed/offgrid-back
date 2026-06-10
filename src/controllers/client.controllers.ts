@@ -2,8 +2,10 @@ import type { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma.js";
 import type { Prisma } from "../generated/prisma/client.js";
 import { z } from "zod";
-import { projectParamsSchema } from "../schemas/project.schema.js";
-import { updateClientSchema } from "../schemas/client.schema.js";
+import {
+	clientParamsSchema,
+	updateClientSchema,
+} from "../schemas/client.schema.js";
 
 export async function updateClient(
 	req: Request,
@@ -11,7 +13,7 @@ export async function updateClient(
 	next: NextFunction,
 ) {
 	try {
-		const parsedParams = projectParamsSchema.safeParse(req.params);
+		const parsedParams = clientParamsSchema.safeParse(req.params);
 		if (!parsedParams.success) {
 			return res
 				.status(400)

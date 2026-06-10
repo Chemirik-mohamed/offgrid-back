@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { updateClient } from "../controllers/client.controllers.js";
 
-export const clientRouter = Router();
+const router = Router();
 
-clientRouter.patch("/:id", updateClient);
+router.patch("/:id", updateClient);
+
+export default router;

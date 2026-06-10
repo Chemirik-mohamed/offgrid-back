@@ -9,7 +9,6 @@ export const projectParamsSchema = z.object({
 export const createProjectschema = z.object({
 	name: z.string().min(3, { error: "minimum 3 caractères." }),
 	description: z.string().optional(),
-	clientId: z.uuid({ error: "L'identifiant client est invalide" }).optional(),
 	status: z
 		.enum([
 			"DRAFT",
@@ -36,10 +35,6 @@ export const updateProjectschema = z.object({
 			"COMPLETED",
 		])
 		.optional(),
-	clientId: z
-		.uuid({ error: "L'identifiant client est invalide" })
-		.optional()
-		.nullable(),
 	isPinned: z.boolean().optional(),
 });
 
