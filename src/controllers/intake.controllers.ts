@@ -1,11 +1,15 @@
 import type { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
+import type { Prisma } from "../generated/prisma/client.js";
 import {
 	intakeApplianceParamsSchema,
 	intakeParamsSchema,
 	submitIntakeSchema,
 } from "../schemas/intakeSchema.js";
-import { addApplianceToProjectSchema } from "../schemas/addApplianceSchema.js";
+import {
+	addApplianceToProjectSchema,
+	updateProjectApplianceSchema,
+} from "../schemas/addApplianceSchema.js";
 import { projectParamsSchema } from "../schemas/project.schema.js";
 import { z } from "zod";
 import { querySchema } from "../schemas/QuerySchema.js";
@@ -355,6 +359,77 @@ export async function deleteIntakeAppliance(
 		await prisma.projectAppliance.delete({ where: { id } });
 
 		return res.status(200).json({ message: "delete" });
+	} catch (error) {
+		next(error);
+	}
+}
+
+export async function updateIntakeAppliance(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
+	try {
+		const parsedParams = intakeApplianceParamsSchema.safeParse(req.params);
+
+		if (!parsedParams.success) {
+			return res
+				.status(400)
+				.json({ error: z.treeifyError(parsedParams.error) });
+		}
+
+		const parsedBody = updateProjectApplianceSchema.safeParse(req.body);
+
+		if (!parsedBody.success) {
+			return res.status(400).json({ error: z.treeifyError(parsedBody.error) });
+		}
+
+		const { token, id } = parsedParams.data;
+		const body = parsedBody.data;
+
+		const intake = await prisma.clientIntake.findUnique({
+			where: { accessToken: token },
+		});
+
+		if (handleIntakeAccessError(intake, res)) {
+			return;
+		}
+		if (!intake) {
+			return;
+		}
+
+		const existing = await prisma.projectAppliance.findFirst({
+			where: {
+				id,
+				projectId: intake.projectId,
+			},
+		});
+
+		if (!existing) {
+			return res
+				.status(404)
+				.json({ error: "Appareil introuvable dans ce projet" });
+		}
+
+		const dataToUpdate: Prisma.ProjectApplianceUpdateInput = {
+			...(body.quantity !== undefined && { quantity: body.quantity }),
+			...(body.timeSlots !== undefined && { timeSlots: body.timeSlots }),
+			...(body.currentType !== undefined && { currentType: body.currentType }),
+			...(body.diversityFactorOverride !== undefined && {
+				diversityFactorOverride: body.diversityFactorOverride,
+			}),
+		};
+
+		if (Object.keys(dataToUpdate).length === 0) {
+			return res.status(400).json({ message: "Aucune donnée à mettre à jour" });
+		}
+
+		const projectAppliance = await prisma.projectAppliance.update({
+			where: { id },
+			data: dataToUpdate,
+		});
+
+		return res.status(200).json({ message: "update", data: projectAppliance });
 	} catch (error) {
 		next(error);
 	}
