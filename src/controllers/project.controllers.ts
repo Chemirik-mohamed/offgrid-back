@@ -14,6 +14,7 @@ import {
 	updateProjectApplianceSchema,
 } from "../schemas/addApplianceSchema.js";
 import { updateSiteSchema } from "../schemas/site.scheam.js";
+import { calculateProjectDailyConsumption } from "../services/projectConsumption.service.js";
 
 const projectInclude = {
 	client: {
@@ -89,6 +90,61 @@ export async function getProjectById(
 		}
 
 		return res.json({ data: project });
+	} catch (error) {
+		next(error);
+	}
+}
+
+export async function getProjectConsumption(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
+	try {
+		const parsedParams = projectParamsSchema.safeParse(req.params);
+
+		if (!parsedParams.success) {
+			return res
+				.status(400)
+				.json({ error: z.treeifyError(parsedParams.error) });
+		}
+
+		const { id } = parsedParams.data;
+
+		const project = await prisma.project.findFirst({
+			where: { id, userId: req.user.id },
+			select: {
+				id: true,
+				projectAppliances: {
+					select: {
+						id: true,
+						applianceId: true,
+						quantity: true,
+						timeSlots: true,
+						unitPowerWSnapshot: true,
+						startupPowerWSnapshot: true,
+						defaultDiversityFactorSnapshot: true,
+						diversityFactorOverride: true,
+						appliance: {
+							select: {
+								name: true,
+								slug: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!project) {
+			return res.status(404).json({ error: "Projet introuvable" });
+		}
+
+		const consumption = calculateProjectDailyConsumption(
+			project.projectAppliances,
+		);
+
+		return res.json({ data: consumption });
 	} catch (error) {
 		next(error);
 	}

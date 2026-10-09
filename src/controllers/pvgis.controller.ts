@@ -1,6 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
+import {
+	createPvgisEstimate,
+	findLatestPvgisEstimate,
+} from "../services/pvgis/pvgis.repository.js";
 import { projectParamsSchema } from "../schemas/project.schema.js";
 import {
 	pvgisCoordinatesSchema,
@@ -24,9 +28,7 @@ export async function estimateProjectPvgis(
 
 		const parsedBody = pvgisEstimateSchema.safeParse(req.body);
 		if (!parsedBody.success) {
-			return res
-				.status(400)
-				.json({ error: z.treeifyError(parsedBody.error) });
+			return res.status(400).json({ error: z.treeifyError(parsedBody.error) });
 		}
 
 		const project = await prisma.project.findFirst({
@@ -47,7 +49,8 @@ export async function estimateProjectPvgis(
 
 		if (project.site?.latitude == null || project.site.longitude == null) {
 			return res.status(422).json({
-				error: "Les coordonnées GPS du site sont nécessaires pour interroger PVGIS.",
+				error:
+					"Les coordonnées GPS du site sont nécessaires pour interroger PVGIS.",
 			});
 		}
 
@@ -67,12 +70,17 @@ export async function estimateProjectPvgis(
 			...parsedBody.data,
 		});
 
-		return res.json({ data: estimate });
+		const savedEstimate = await createPvgisEstimate(
+			parsedParams.data.id,
+			estimate,
+		);
+		return res.status(201).json({ data: savedEstimate });
 	} catch (error) {
 		if (error instanceof PvgisError) {
 			if (error.code === "UNAVAILABLE") {
 				return res.status(503).json({
-					error: "PVGIS est temporairement indisponible. Réessaie dans quelques instants.",
+					error:
+						"PVGIS est temporairement indisponible. Réessaie dans quelques instants.",
 				});
 			}
 
@@ -87,6 +95,37 @@ export async function estimateProjectPvgis(
 			});
 		}
 
+		next(error);
+	}
+}
+
+export async function getLatestProjectPvgisEstimate(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
+	try {
+		const parsedParams = projectParamsSchema.safeParse(req.params);
+
+		if (!parsedParams.success) {
+			return res
+				.status(400)
+				.json({ error: z.treeifyError(parsedParams.error) });
+		}
+
+		const estimate = await findLatestPvgisEstimate(
+			parsedParams.data.id,
+			req.user.id,
+		);
+
+		if (!estimate) {
+			return res.status(404).json({
+				error: "Aucune estimation PVGIS n’est disponible pour ce projet.",
+			});
+		}
+
+		return res.json({ data: estimate });
+	} catch (error) {
 		next(error);
 	}
 }

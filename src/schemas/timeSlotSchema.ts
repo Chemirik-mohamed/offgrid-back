@@ -10,8 +10,9 @@ export const timeSlotSchema = z
 		}),
 		to: z.iso.time({ error: "Heure de fin invalide (format HH:MM attendu)" }),
 	})
-	.refine((data) => data.from !== data.to, {
-		error: "L'heure de début et l'heure de fin ne peuvent pas être identiques",
+	.refine((data) => data.label === "continuous" || data.from !== data.to, {
+		error:
+			"L'heure de début et l'heure de fin ne peuvent pas être identiques, sauf pour une utilisation continue",
 	});
 
 export type TimeSlotSchemaInput = z.infer<typeof timeSlotSchema>;

@@ -31,5 +31,10 @@ export const updateProjectApplianceSchema = z.object({
 	currentType: z
 		.enum(["AC", "DC"], { error: "Type de courant invalide" })
 		.optional(),
-	diversityFactorOverride: z.number().nullable().optional(),
+	diversityFactorOverride: z
+		.number()
+		.gt(0, { error: "Le foisonnement doit être supérieur à 0" })
+		.max(1, { error: "Le foisonnement ne peut pas dépasser 1" })
+		.nullable()
+		.optional(),
 });

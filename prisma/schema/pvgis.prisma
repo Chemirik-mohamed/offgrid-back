@@ -1,0 +1,36 @@
+enum PvgisTechnology {
+  crystSi
+  crystSi2025
+  CIS
+  CdTe
+  Unknown
+}
+
+enum PvgisMountingPlace {
+  free
+  building
+}
+
+model PvgisEstimate {
+  id              String   @id @default(uuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  calculatedAt    DateTime @default(now())
+  pvgisApiVersion String   @default("5.3")
+
+  latitude       Float
+  longitude      Float
+  inclinationDeg Float
+  azimuthDeg     Float
+  lossPercent    Float
+  technology     PvgisTechnology    @default(crystSi)
+  mountingPlace  PvgisMountingPlace @default(free)
+
+  referencePeakPowerKwp     Float @default(1)
+  annualIrradiationKwhPerM2 Float
+  annualProductionKwhPerKwp Float
+  monthly                   Json
+
+  @@index([projectId, calculatedAt])
+  @@map("pvgis_estimate")
+}
